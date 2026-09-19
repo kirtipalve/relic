@@ -98,75 +98,107 @@ export const generalQuestions: Question[] = [
   },
 ]
 
-export const willQuestions: Question[] = [
-  {
-    key: 'executorName',
-    prompt: 'Who do you want to name as executor — the person responsible for carrying out your will? Give their full name and relationship to you.',
-    type: 'text',
-  },
-  {
-    key: 'executorBackup',
-    prompt: 'Would you like to name a backup executor, in case your first choice is unable to serve?',
-    type: 'text',
-    optional: true,
-  },
-  {
-    key: 'guardian',
-    prompt: 'If you have minor children, who would you like to name as their guardian?',
-    type: 'text',
-    optional: true,
-  },
-  {
-    key: 'guardianBackup',
-    prompt: 'Would you like to name a backup guardian as well?',
-    type: 'text',
-    optional: true,
-  },
-  {
-    key: 'beneficiaries',
-    prompt: 'Who are your beneficiaries, and what share or specific items should each of them receive?',
-    type: 'text',
-    pace: 'slow',
-  },
-  {
-    key: 'assets',
-    prompt: 'List your major assets — real estate, bank or investment accounts, vehicles, business interests, digital assets, or other valuable property.',
-    type: 'text',
-  },
-  {
-    key: 'specificBequests',
-    prompt: "Are there any specific items you'd like to leave to specific people? For example, \"my watch to my brother John.\"",
-    type: 'text',
-    optional: true,
-  },
-  {
-    key: 'residuaryEstate',
-    prompt: "Who should receive everything else not specifically mentioned above — this is called your residuary estate?",
-    type: 'text',
-  },
-  {
-    key: 'debts',
-    prompt: 'Any debts or liabilities you want addressed in your will?',
-    type: 'text',
-    optional: true,
-  },
-  {
-    key: 'funeralWishes',
-    prompt: 'Do you have any funeral or burial wishes you want recorded?',
-    type: 'text',
-    optional: true,
-    pace: 'slow',
-  },
-  {
-    key: 'charitableDonations',
-    prompt: 'Would you like to leave anything to charity?',
-    type: 'text',
-    optional: true,
-  },
-  {
-    key: 'petCare',
-    prompt: 'Do you have any pets you want provided for?',
-    type: 'text',
-    optional: true,
-  },
+const NEGATIVE_ANSWERS = new Set(['no', 'n/a', 'na', 'none', 'nope', 'not really', 'no.', '-', '(skipped)'])
+
+function hasRealAnswer(value: string | undefined): value is string {
+  if (!value) return false
+  const normalized = value.trim().toLowerCase()
+  return normalized.length > 0 && !NEGATIVE_ANSWERS.has(normalized)
+}
+
+function excerpt(value: string, max = 90): string {
+  const clean = value.trim()
+  return clean.length > max ? `${clean.slice(0, max)}…` : clean
+}
+
+// Topics from page 1 that, if answered, get a targeted follow-up here asking
+// who should receive that specific thing — instead of a generic asset dump.
+const ALLOCATION_TOPICS: { key: string; label: string; pace: 'fast' | 'slow' }[] = [
+  { key: 'spousePartner', label: 'your spouse or partner', pace: 'slow' },
+  { key: 'familyChildren', label: 'your children or family', pace: 'slow' },
+  { key: 'realEstate', label: 'the real estate you mentioned', pace: 'fast' },
+  { key: 'retirementSavings', label: 'your retirement savings', pace: 'fast' },
+  { key: 'investments', label: 'your investments', pace: 'fast' },
+  { key: 'businessInterests', label: 'your business interest', pace: 'fast' },
+  { key: 'bankAccounts', label: 'your bank accounts', pace: 'fast' },
+  { key: 'lifeInsurance', label: 'your life insurance or annuity', pace: 'fast' },
+  { key: 'treasuredBelongings', label: 'the belongings you mentioned', pace: 'fast' },
+  { key: 'othersToInclude', label: 'the other people or charities you mentioned', pace: 'fast' },
+  { key: 'catchAll', label: 'the other things you mentioned', pace: 'slow' },
 ]
+
+// Page 2's questions are built from this specific will template's blank fields,
+// plus a targeted follow-up for each thing the person actually told us about in page 1
+// (skips topics they answered "no" or left blank to).
+export function buildWillQuestions(generalAnswers: Answers): Question[] {
+  const questions: Question[] = [
+    { key: 'residenceCity', prompt: 'What city do you currently legally reside in?', type: 'text', pace: 'fast' },
+    { key: 'residenceCounty', prompt: 'And which county is that in?', type: 'text', pace: 'fast' },
+    {
+      key: 'residenceState',
+      prompt: 'And the state — this is also what determines which state\'s laws will govern your will.',
+      type: 'text',
+      pace: 'fast',
+    },
+    {
+      key: 'executorDetails',
+      prompt:
+        'Who do you want to name as your Personal Representative (executor) — the person responsible for carrying out your will? Please share their full name and current address, including county and state.',
+      type: 'text',
+      pace: 'fast',
+    },
+    {
+      key: 'executorBackupDetails',
+      prompt: 'Would you like to name a backup executor, in case your first choice is unable to serve? If so, share their full name and address.',
+      type: 'text',
+      optional: true,
+      pace: 'fast',
+    },
+    {
+      key: 'guardian',
+      prompt: 'If you have minor children, who would you like to name as their guardian? Please include their full name and address.',
+      type: 'text',
+      optional: true,
+      pace: 'fast',
+    },
+    {
+      key: 'guardianBackup',
+      prompt: 'Would you like to name a backup guardian as well?',
+      type: 'text',
+      optional: true,
+      pace: 'fast',
+    },
+  ]
+
+  for (const topic of ALLOCATION_TOPICS) {
+    const answer = generalAnswers[topic.key]
+    if (!hasRealAnswer(answer)) continue
+    questions.push({
+      key: `alloc_${topic.key}`,
+      prompt: `Earlier you mentioned ${topic.label}: "${excerpt(answer)}". Who should receive this, and is there anything specific you'd like noted?`,
+      type: 'text',
+      optional: true,
+      pace: topic.pace,
+    })
+  }
+
+  questions.push(
+    {
+      key: 'beneficiaryDetails',
+      prompt:
+        'For each person you named above, could you give me their full name, current address, relationship to you, and the last 4 digits of their Social Security Number? For example: "Jane Doe – spouse – 123 Main St, Springfield IL – SSN last 4: 1234."',
+      type: 'text',
+      optional: true,
+      pace: 'fast',
+    },
+    {
+      key: 'residuaryEstate',
+      prompt: 'Who should receive everything else not specifically mentioned above — this is called your residuary estate?',
+      type: 'text',
+      optional: true,
+      pace: 'fast',
+    },
+  )
+
+  return questions
+}

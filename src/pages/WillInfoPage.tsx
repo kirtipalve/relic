@@ -1,11 +1,12 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Chat from '../Chat'
-import { willQuestions } from '../questions'
+import { buildWillQuestions } from '../questions'
 import { loadAnswers } from '../store'
 
 export default function WillInfoPage() {
   const navigate = useNavigate()
+  const [questions] = useState(() => buildWillQuestions(loadAnswers()))
 
   useEffect(() => {
     if (!loadAnswers().nameAndOrigin) navigate('/')
@@ -13,8 +14,8 @@ export default function WillInfoPage() {
 
   return (
     <Chat
-      intro="Thank you. Now let's get into the details of your will itself."
-      questions={willQuestions}
+      intro="Thank you for sharing all of that. Now let's turn it into the specifics your will needs."
+      questions={questions}
       onComplete={() => {}}
       step={2}
       totalSteps={2}
