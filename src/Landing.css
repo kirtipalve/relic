@@ -1,0 +1,130 @@
+.landing {
+  height: 100dvh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  background: var(--parchment);
+  position: relative;
+  overflow: hidden;
+  transition: opacity 0.4s ease;
+}
+
+.landing-leaving {
+  opacity: 0;
+}
+
+.seal {
+  width: 156px;
+  height: 156px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, var(--seal), var(--seal-dark));
+  box-shadow: 0 18px 30px rgba(43, 33, 21, 0.35), inset 0 0 0 6px rgba(0, 0, 0, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: translateY(-160vh) scale(0.85) rotate(-6deg);
+  animation: seal-drop 0.65s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.seal-word {
+  font-family: 'Playfair Display', serif;
+  font-weight: 700;
+  font-size: 1.4rem;
+  letter-spacing: 0.18em;
+  color: #f0e2c4;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.4);
+  opacity: 0;
+  animation: emboss-in 0.5s ease forwards;
+  animation-delay: 0.62s;
+}
+
+.seal-ring {
+  position: absolute;
+  width: 156px;
+  height: 156px;
+  border-radius: 50%;
+  border: 2px solid var(--seal);
+  opacity: 0;
+  animation: ring-pulse 0.6s ease-out forwards;
+  animation-delay: 0.58s;
+}
+
+.landing-tagline {
+  font-style: italic;
+  color: var(--ink-soft);
+  font-size: 1.05rem;
+  opacity: 0;
+  animation: fade-up 0.6s ease forwards;
+  animation-delay: 1.15s;
+}
+
+.landing-begin {
+  font-family: 'Lora', serif;
+  font-size: 0.95rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: transparent;
+  color: var(--seal);
+  border: 1px solid var(--seal);
+  border-radius: 999px;
+  padding: 0.65rem 2rem;
+  cursor: pointer;
+  opacity: 0;
+  animation: fade-up 0.6s ease forwards;
+}
+
+.landing-begin:hover {
+  background: var(--seal);
+  color: var(--parchment);
+}
+
+@keyframes seal-drop {
+  0% {
+    transform: translateY(-160vh) scale(0.85) rotate(-6deg);
+  }
+  70% {
+    transform: translateY(6px) scale(1.08) rotate(2deg);
+  }
+  85% {
+    transform: translateY(-3px) scale(0.98) rotate(-1deg);
+  }
+  100% {
+    transform: translateY(0) scale(1) rotate(0deg);
+  }
+}
+
+@keyframes emboss-in {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes ring-pulse {
+  from {
+    opacity: 0.6;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 0;
+    transform: scale(1.6);
+  }
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

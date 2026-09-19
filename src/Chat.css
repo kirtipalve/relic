@@ -1,0 +1,228 @@
+.chat {
+  height: 100dvh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  background: var(--parchment);
+  position: relative;
+}
+
+.chat-progress {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.5rem;
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  color: var(--ink-soft);
+}
+
+.chat-log {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 3.5rem max(1.5rem, calc(50% - 320px)) 1.5rem;
+}
+
+.message-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.5rem;
+  align-self: flex-start;
+  max-width: 100%;
+}
+
+.avatar {
+  flex-shrink: 0;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, var(--seal), var(--seal-dark));
+  color: #f0e2c4;
+  font-family: 'Playfair Display', serif;
+  font-weight: 700;
+  font-size: 0.7rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bubble {
+  max-width: 100%;
+  padding: 0.75rem 1.05rem;
+  border-radius: 4px;
+  line-height: 1.55;
+  font-size: 1.02rem;
+  white-space: pre-wrap;
+  animation: bubble-in 0.4s ease both;
+}
+
+.bubble.agent {
+  background: var(--bubble-agent);
+  color: var(--ink);
+  border-top-left-radius: 0;
+}
+
+.bubble.user {
+  align-self: flex-end;
+  background: var(--bubble-user);
+  color: var(--parchment);
+  border-top-right-radius: 0;
+}
+
+@keyframes bubble-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.typing-dots {
+  display: flex;
+  gap: 0.3rem;
+  align-items: center;
+  padding: 0.85rem 1.05rem;
+}
+
+.typing-dots span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--ink-soft);
+  animation: dot-bounce 1.1s infinite ease-in-out;
+}
+
+.typing-dots span:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.typing-dots span:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+@keyframes dot-bounce {
+  0%,
+  60%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.5;
+  }
+  30% {
+    transform: translateY(-4px);
+    opacity: 1;
+  }
+}
+
+.chat-input {
+  display: flex;
+  gap: 0.6rem;
+  border-top: 1px solid var(--parchment-deep);
+  padding: 1rem max(1.5rem, calc(50% - 320px)) 1.5rem;
+}
+
+.chat-input input {
+  flex: 1;
+  padding: 0.7rem 0.9rem;
+  border: 1px solid var(--parchment-deep);
+  border-radius: 4px;
+  font-size: 1rem;
+  font-family: inherit;
+  background: #fffdf8;
+  color: var(--ink);
+}
+
+.chat-input input:focus {
+  outline: none;
+  border-color: var(--seal);
+}
+
+.chat-input button {
+  padding: 0.7rem 1.3rem;
+  border-radius: 4px;
+  border: none;
+  background: var(--seal);
+  color: var(--parchment);
+  cursor: pointer;
+  font-size: 1rem;
+  font-family: inherit;
+}
+
+.chat-input button:hover {
+  background: var(--seal-dark);
+}
+
+.mic-btn {
+  background: transparent !important;
+  color: var(--ink-soft) !important;
+  border: 1px solid var(--parchment-deep) !important;
+  padding: 0 0.8rem !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mic-btn:hover {
+  color: var(--seal) !important;
+  border-color: var(--seal) !important;
+}
+
+.mic-listening {
+  color: var(--seal) !important;
+  border-color: var(--seal) !important;
+  animation: mic-pulse 1s infinite;
+}
+
+@keyframes mic-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(122, 35, 32, 0.35);
+  }
+  50% {
+    box-shadow: 0 0 0 5px rgba(122, 35, 32, 0);
+  }
+}
+
+.skip-btn {
+  background: transparent !important;
+  color: var(--ink-soft) !important;
+  border: none !important;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  padding: 0.7rem 0.4rem !important;
+  font-size: 0.9rem !important;
+}
+
+.skip-btn:hover {
+  color: var(--seal) !important;
+}
+
+.options {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 1rem max(1.5rem, calc(50% - 320px)) 1.5rem;
+  border-top: 1px solid var(--parchment-deep);
+}
+
+.option-btn {
+  padding: 0.55rem 1rem;
+  border-radius: 999px;
+  border: 1px solid var(--gold);
+  background: #fffdf8;
+  color: var(--ink);
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-family: inherit;
+}
+
+.option-btn:hover {
+  background: var(--seal);
+  border-color: var(--seal);
+  color: var(--parchment);
+}

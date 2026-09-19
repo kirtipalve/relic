@@ -1,0 +1,33 @@
+:root {
+  --parchment: #f3ead9;
+  --parchment-deep: #e9dcc3;
+  --bubble-agent: #ece0c8;
+  --bubble-user: #3a2f22;
+  --ink: #2b2115;
+  --ink-soft: #6b5d48;
+  --seal: #7a2320;
+  --seal-dark: #591814;
+  --gold: #a9884f;
+
+  font-family: 'Lora', Georgia, serif;
+  color-scheme: light;
+  color: var(--ink);
+  background-color: var(--parchment);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: var(--parchment);
+}
